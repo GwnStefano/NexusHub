@@ -1,3 +1,5 @@
+--// ALL CREDITS GO TOWARDS THE MAKERS OF KAVO \\--
+
 local Kavo = {}
 
 local tween = game:GetService("TweenService")
