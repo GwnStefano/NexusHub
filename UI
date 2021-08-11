@@ -113,6 +113,13 @@ local themeStyles = {
         Header = Color3.fromRGB(36, 38, 35),
         TextColor = Color3.fromRGB(152, 99, 53),
         ElementColor = Color3.fromRGB(24, 24, 24)
+    },
+    Serpent = {
+        SchemeColor = Color3.fromRGB(0, 166, 58),
+        Background = Color3.fromRGB(31, 41, 43),
+        Header = Color3.fromRGB(22, 29, 31),
+        TextColor = Color3.fromRGB(255,255,255),
+        ElementColor = Color3.fromRGB(22, 29, 31)
     }
 }
 local oldTheme = ""
@@ -132,7 +139,7 @@ end
 Settings = game:service'HttpService':JSONEncode(readfile(Name))
 end)
 
-local LibName = "Nexus Exploits"
+local LibName = "NexusExploits"
 
 function Kavo:ToggleUI()
     if game.CoreGui[LibName].Enabled then
@@ -162,6 +169,8 @@ function Kavo.CreateLib(kavName, themeList)
         themeList = themeStyles.Sentinel
     elseif themeList == "Synapse" then
         themeList = themeStyles.Synapse
+    elseif themeList == "Serpent" then
+        themeList = themeStyles.Serpent
     else
         if themeList.SchemeColor == nil then
             themeList.SchemeColor = Color3.fromRGB(74, 99, 135)
@@ -180,7 +189,7 @@ function Kavo.CreateLib(kavName, themeList)
     local selectedTab 
     kavName = kavName or "Library"
     table.insert(Kavo, kavName)
-    for i,v in pairs(game.Players.LocalPlayer.PlayerGui:GetChildren()) do
+    for i,v in pairs(game.CoreGui:GetChildren()) do
         if v:IsA("ScreenGui") and v.Name == kavName then
             v:Destroy()
         end
@@ -397,9 +406,9 @@ function Kavo.CreateLib(kavName, themeList)
         tabButton.BackgroundTransparency = 1
 
         if first then
+            first = false
             page.Visible = true
             tabButton.BackgroundTransparency = 0
-            first = false
             UpdateSize()
         else
             page.Visible = false
@@ -452,10 +461,11 @@ function Kavo.CreateLib(kavName, themeList)
             end
         end)()
     
-        function Sections:NewSection(secName)
+        function Sections:NewSection(secName, hidden)
             secName = secName or "Section"
+            local sectionFunctions = {}
             local modules = {}
-
+	    hidden = hidden or false
             local sectionFrame = Instance.new("Frame")
             local sectionlistoknvm = Instance.new("UIListLayout")
             local sectionHead = Instance.new("Frame")
@@ -463,11 +473,16 @@ function Kavo.CreateLib(kavName, themeList)
             local sectionName = Instance.new("TextLabel")
             local sectionInners = Instance.new("Frame")
             local sectionElListing = Instance.new("UIListLayout")
+			
+	    if hidden then
+		sectionHead.Visible = false
+	    else
+		sectionHead.Visible = true
+	    end
 
             sectionFrame.Name = "sectionFrame"
             sectionFrame.Parent = page
             sectionFrame.BackgroundColor3 = themeList.Background--36, 37, 43
-            Objects[sectionFrame] = "BackgroundColor3"
             sectionFrame.BorderSizePixel = 0
             
             sectionlistoknvm.Name = "sectionlistoknvm"
@@ -511,14 +526,13 @@ function Kavo.CreateLib(kavName, themeList)
             Objects[sectionName] = "TextColor3"
             sectionName.TextSize = 14.000
             sectionName.TextXAlignment = Enum.TextXAlignment.Left
-
             if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
                 Utility:TweenObject(sectionName, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
             end 
             if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
                 Utility:TweenObject(sectionName, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
             end 
-
+               
             sectionInners.Name = "sectionInners"
             sectionInners.Parent = sectionFrame
             sectionInners.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -547,10 +561,9 @@ function Kavo.CreateLib(kavName, themeList)
                 local frameSc = sectionlistoknvm.AbsoluteContentSize
                 sectionFrame.Size = UDim2.new(0, 352, 0, frameSc.Y)
             end
-            updateSectionFrame()
-
+                updateSectionFrame()
+                UpdateSize()
             local Elements = {}
-
             function Elements:NewButton(bname,tipINf, callback)
                 showLogo = showLogo or true
                 local ButtonFunction = {}
@@ -659,6 +672,7 @@ function Kavo.CreateLib(kavName, themeList)
                 end 
 
                 updateSectionFrame()
+                                UpdateSize()
 
                 local ms = game.Players.LocalPlayer:GetMouse()
 
@@ -856,6 +870,7 @@ function Kavo.CreateLib(kavName, themeList)
 
 
                 updateSectionFrame()
+                                UpdateSize()
             
                 local btn = textboxElement
                 local infBtn = viewInfo
@@ -1059,7 +1074,8 @@ function Kavo.CreateLib(kavName, themeList)
                     local img = toggleEnabled
                     local infBtn = viewInfo
 
-                    updateSectionFrame()
+                                    updateSectionFrame()
+                UpdateSize()
 
                     btn.MouseButton1Click:Connect(function()
                         if not focusing then
@@ -1167,9 +1183,10 @@ function Kavo.CreateLib(kavName, themeList)
                         end
                     end)
                     function TogFunction:UpdateToggle(newText, isTogOn)
-                        togName.Text = newText
                         isTogOn = isTogOn or toggle
-                        if not isTogOn then return end
+                        if newText ~= nil then 
+                            togName.Text = newText
+                        end
                         if isTogOn then
                             toggled = true
                             game.TweenService:Create(img, TweenInfo.new(0.11, Enum.EasingStyle.Linear,Enum.EasingDirection.In), {
@@ -1323,7 +1340,8 @@ function Kavo.CreateLib(kavName, themeList)
                 end 
 
 
-                updateSectionFrame()
+                                updateSectionFrame()
+                UpdateSize()
                 local mouse = game:GetService("Players").LocalPlayer:GetMouse();
 
                 local ms = game.Players.LocalPlayer:GetMouse()
@@ -1831,7 +1849,8 @@ function Kavo.CreateLib(kavName, themeList)
                                 Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
                             end
                         end)
-                        
+                                        updateSectionFrame()
+                UpdateSize()
                         local hov = false
                         optionSelect.MouseEnter:Connect(function()
                             if not focusing then
@@ -1855,7 +1874,7 @@ function Kavo.CreateLib(kavName, themeList)
                                     optionSelect.BackgroundColor3 = themeList.ElementColor
                                 end
                                 optionSelect.TextColor3 = Color3.fromRGB(themeList.TextColor.r * 255 - 6, themeList.TextColor.g * 255 - 6, themeList.TextColor.b * 255 - 6)
-                                Sample1.ImageColor3 = themeList.SchemeColor
+                                Sample11.ImageColor3 = themeList.SchemeColor
                             end
                         end)()
                     end
@@ -2009,6 +2028,8 @@ function Kavo.CreateLib(kavName, themeList)
                         viewDe = false
                     end
                 end)  
+                                updateSectionFrame()
+                UpdateSize()
                 local oHover = false
                 keybindElement.MouseEnter:Connect(function()
                     if not focusing then
@@ -2080,10 +2101,6 @@ function Kavo.CreateLib(kavName, themeList)
 
                     end
                 end)()
-            end
-
-            function Elements:NewSelection(selText, selInf, list, callback)
-
             end
 
             function Elements:NewColorPicker(colText, colInf, defcolor, callback)
@@ -2551,11 +2568,53 @@ function Kavo.CreateLib(kavName, themeList)
                 end)
                 setcolor({h,s,v})
             end
+            
+            function Elements:NewLabel(title)
+            	local labelFunctions = {}
+            	local label = Instance.new("TextLabel")
+            	local UICorner = Instance.new("UICorner")
+            	label.Name = "label"
+            	label.Parent = sectionInners
+            	label.BackgroundColor3 = themeList.SchemeColor
+            	label.BorderSizePixel = 0
+            	label.Text = title
+           		label.Size = UDim2.new(0, 352, 0, 33)
+	            label.Font = Enum.Font.Gotham
+	            label.Text = "  "..title
+	            label.TextColor3 = themeList.TextColor
+	            Objects[label] = "TextColor3"
+	            label.TextSize = 14.000
+	            label.TextXAlignment = Enum.TextXAlignment.Left
+	            
+	           	UICorner.CornerRadius = UDim.new(0, 4)
+                UICorner.Parent = label
+            	
+	            if themeList.SchemeColor == Color3.fromRGB(255,255,255) then
+	                Utility:TweenObject(label, {TextColor3 = Color3.fromRGB(0,0,0)}, 0.2)
+	            end 
+	            if themeList.SchemeColor == Color3.fromRGB(0,0,0) then
+	                Utility:TweenObject(label, {TextColor3 = Color3.fromRGB(255,255,255)}, 0.2)
+	            end 
+
+		        coroutine.wrap(function()
+		            while wait() do
+		                label.BackgroundColor3 = themeList.SchemeColor
+		                label.TextColor3 = themeList.TextColor
+		            end
+		        end)()
+                updateSectionFrame()
+                UpdateSize()
+                function labelFunctions:UpdateLabel(newText)
+                	if label.Text ~= "  "..newText then
+                		label.Text = "  "..newText
+                	end
+                end	
+                return labelFunctions
+            end	
             return Elements
         end
         return Sections
     end  
     return Tabs
 end
-
 return Kavo
