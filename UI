@@ -139,7 +139,7 @@ end
 Settings = game:service'HttpService':JSONEncode(readfile(Name))
 end)
 
-local LibName = "NexusExploits"
+local LibName = "Nexus Exploits"
 
 function Kavo:ToggleUI()
     if game.CoreGui[LibName].Enabled then
